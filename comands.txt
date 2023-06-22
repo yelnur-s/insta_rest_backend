@@ -1,0 +1,4 @@
+// команда для первого запуска контейнера 
+docker-compose up --build 
+// команда для последующего запуска docker-compose 
+docker-compose up
