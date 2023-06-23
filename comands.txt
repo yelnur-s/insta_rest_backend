@@ -3,3 +3,5 @@ docker-compose up --build
 // команда для последующего запуска docker-compose 
 docker-compose up
 
+// установка sequelize с доп библиотеками ( драйвер PostgreSQL (pg), и дополнительный модуль (pg-hstore), который используется для хранения данных в формате hstore.)
+npm install sequelize pg pg-hstore
