@@ -7,10 +7,7 @@ app.use(logger('dev'));
 app.use(express.urlencoded());
 app.use(express.json());
 
-
-app.get('/', (req, res) => {
-  res.send('ok');
-})
+app.use(require('./app/auth/routes'));
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
