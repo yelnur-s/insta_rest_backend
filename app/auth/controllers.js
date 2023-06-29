@@ -1,5 +1,9 @@
 const bcrypt = require('bcrypt');
 const User = require('./User');
+const jwt = require('jsonwebtoken');
+const {jwtOptions} = require('./passport');
+
+
 const signUp = async (req, res) => {
   if (
     req.body.email.length > 0 &&
@@ -33,6 +37,35 @@ const signUp = async (req, res) => {
   }
 }
 
+const signIn = async (req, res) => {
+  
+    const user = await User.findOne({where: {email: req.body.email}})
+    if(!user){
+      return res.status(401).json({ message: 'Неправильный email или пароль' });
+    }
+    const isMatch = await bcrypt.compare(req.body.password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Неправильный email или пароль' });
+    }
+    // Проверка имени пользователя и пароля в базе данных
+    // При успешной аутентификации, создайте JWT токен
+    const token = jwt.sign({
+        id: user.id,
+        email: user.email,
+        full_name: user.full_name,
+        phone: user.phone,
+
+      }, jwtOptions.secretOrKey,
+      {
+        // продолжительность токена
+        expiresIn: 24 * 60 * 60
+      }
+    );
+
+    res.json({ message: 'Вход выполнен успешно', token });
+}
+
 module.exports = {
   signUp,
+  signIn
 }
