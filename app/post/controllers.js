@@ -1,10 +1,6 @@
 const Post = require('./Post');
 
 const createPost = (req, res) => {
-  console.log(req.body)
-  console.log(req.user)
-
-  // res.status(200).end();
   if(
     req.body.description.length >= 0 &&
     req.user.id > 0
@@ -86,7 +82,28 @@ const deletePostByID = async (req, res) => {
     throw error;
   }
 }
+const editPost = async (req, res) => {
+  if(
+    req.body.description.length >= 0 &&
+    req.user.id > 0
+  ){
+    const post = Post.update({
+      image: 'test',
+      description: req.body.description,
+      userId: req.user.id
+    },
+    {
+      where: {
+        id: req.body.id
+      }
+    })
+   
+    res.status(200).end();
+  }else{
+    res.status(401).send({message: "заполните все поля"});
+  }
+}
 
 
-module.exports = {createPost, getAllUserPosts, getAllUsersPosts, getPostByID, deletePostByID}
+module.exports = {createPost, getAllUserPosts, getAllUsersPosts, getPostByID, deletePostByID, editPost}
 

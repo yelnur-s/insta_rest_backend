@@ -65,7 +65,32 @@ const signIn = async (req, res) => {
     res.json({ message: 'Вход выполнен успешно', token });
 }
 
+const editUser = async (req, res) => {
+  console.log(req.body)
+  if (
+    req.body.email.length > 0 &&
+    req.body.full_name.length > 0 &&
+    req.body.username.length > 0
+  ){
+    const user = await User.update({
+      email: req.body.email,
+      full_name: req.body.full_name,
+      username: req.body.username,
+      phone: req.body.phone || null
+    },
+    {
+      where: {
+        id: req.user.id
+      }
+    })
+    res.status(200).end()
+  }else{
+    res.status(403).send({message: "Заполните все поля"})
+  }
+}
+
 module.exports = {
   signUp,
-  signIn
+  signIn,
+  editUser
 }
