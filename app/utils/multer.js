@@ -2,7 +2,13 @@ const multer = require('multer');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './public/images/postsImages');
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, './public/images/postsImages');
+    } else if (file.mimetype.startsWith('video/')) {
+      cb(null, './public/images/stories');
+    } else {
+      cb(new Error('Invalid file type'));
+    }
   },
   filename: function (req, file, cb) {
     let ext = file.originalname.split('.');
