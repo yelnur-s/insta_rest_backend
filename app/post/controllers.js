@@ -1,24 +1,8 @@
 const Post = require('./Post');
+const fs = require('fs');
+const path = require('path');
 
 const createPost = (req, res) => {
-  // if(
-  //   req.body.description.length >= 0 &&
-  //   req.user.id > 0
-  // ){
-  //   const post = Post.create({
-  //     image: 'test',
-  //     description: req.body.description,
-  //     userId: req.user.id
-  //   })
-   
-  //   res.status(200).send(post);
-  // }else{
-  //   res.status(401).send({message: "заполните все поля"});
-  // }
-  console.log(req.body)
-  console.log(req.file)
-  res.status(200).end()
-  // c картинкой
   if(
     req.file && 
     req.body.description >= 0
@@ -32,6 +16,46 @@ const createPost = (req, res) => {
     res.status(200).end();
   }else{
     res.status(401).send({message: "заполните все поля"});
+  }
+}
+
+const editPost = async (req, res) => {
+  if(
+    req.body.description.length >= 0 &&
+    req.file
+  ){
+    const post = await Post.findByPk(req.body.id);
+
+    fs.unlinkSync(path.join(__dirname + '../../../public' + post.image));
+
+    Post.update({
+      image: '/images/postsImages/' + req.file.filename,
+      description: req.body.description,
+      userId: req.user.id
+    },
+    {
+      where: {
+        id: req.body.id
+      }
+    })
+   
+    res.status(200).end();
+  }else{
+    res.status(401).send({message: "заполните все поля"});
+  }
+}
+
+const deletePostByID = async (req, res) => {
+  const post = await Post.findByPk(req.params.id)
+  fs.unlinkSync(path.join(__dirname + '../../../public' + post.image));
+  try {
+    await Post.destroy({
+      where: { id: req.params.id }
+    })
+    res.status(200).send();
+  } catch (error) {
+      console.error('Error deleting item by ID:', error);
+    throw error;
   }
 }
 
@@ -74,38 +98,7 @@ const getPostByID = async (req, res) => {
     throw error;
   }
 }
-const deletePostByID = async (req, res) => {
-  try {
-    const post = await Post.destroy({
-      where: { id: req.params.id }
-    })
-    res.status(200).send();
-  } catch (error) {
-      console.error('Error deleting item by ID:', error);
-    throw error;
-  }
-}
-const editPost = async (req, res) => {
-  if(
-    req.body.description.length >= 0 &&
-    req.user.id > 0
-  ){
-    const post = Post.update({
-      image: 'test',
-      description: req.body.description,
-      userId: req.user.id
-    },
-    {
-      where: {
-        id: req.body.id
-      }
-    })
-   
-    res.status(200).end();
-  }else{
-    res.status(401).send({message: "заполните все поля"});
-  }
-}
+
 
 
 module.exports = {createPost, getAllUserPosts, getAllUsersPosts, getPostByID, deletePostByID, editPost}
