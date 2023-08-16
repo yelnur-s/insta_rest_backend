@@ -17,6 +17,7 @@ require('./app/auth/passport');
 app.use(require('./app/auth/routes'));
 app.use(require('./app/post/router'));
 app.use(require('./app/story/router'));
+app.use(require('./app/comments/router'));
 
 
 app.listen(PORT, () => {

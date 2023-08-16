@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/db');
-
 const User = sequelize.define('User', {
   email: {
     type: DataTypes.STRING,
@@ -32,5 +31,8 @@ const User = sequelize.define('User', {
   timestamps: false, // Отключение автоматических полей createdAt и updatedAt
 }
 );
+
+
+
 
 module.exports = User;
