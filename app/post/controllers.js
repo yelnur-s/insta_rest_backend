@@ -1,6 +1,8 @@
-const Post = require('./Post');
 const fs = require('fs');
 const path = require('path');
+const { Op } = require('sequelize');
+const User = require('../auth/User');
+const Post = require('./Post');
 
 const createPost = (req, res) => {
   if(
@@ -98,8 +100,26 @@ const getPostByID = async (req, res) => {
     throw error;
   }
 }
+const getByUsername = async (req, res) => {
+  const username = req.params.username.toLowerCase();
+  const user = await User.findOne({
+    where: {
+      username: { [Op.iLike]: `%${username}%` }
+    }
+  })
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }else{
+    const posts = await Post.findAll({
+      where: {
+        userId: user.id
+      }
+    })
+    res.status(200).send(posts)
+  }
+
+}
 
 
-
-module.exports = {createPost, getAllUserPosts, getAllUsersPosts, getPostByID, deletePostByID, editPost}
+module.exports = {createPost, getAllUserPosts, getAllUsersPosts, getPostByID, deletePostByID, editPost, getByUsername}
 

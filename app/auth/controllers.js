@@ -89,8 +89,21 @@ const editUser = async (req, res) => {
   }
 }
 
+const userDetailInfo = async (req, res) => {
+  const user = await User.findOne({
+    where: {
+      username: req.params.username
+    },
+    attributes: { exclude: ['password'] }, // Исключаем поле password из выборки
+  })
+
+  if(user) res.status(200).send(user)
+  else res.status(404).send({message: "User not found"})
+}
+
 module.exports = {
   signUp,
   signIn,
-  editUser
+  editUser,
+  userDetailInfo
 }

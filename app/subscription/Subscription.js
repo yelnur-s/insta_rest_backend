@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/db');
+const User = require('../auth/User');
 
 const Subscription = sequelize.define('Subscription', {
   followerId: {
@@ -15,5 +16,15 @@ const Subscription = sequelize.define('Subscription', {
   timestamps: false, // Отключение автоматических полей createdAt и updatedAt
 }
 );
+
+Subscription.belongsTo(User, {
+  foreignKey: 'followerId',
+  as: 'Follower', // Алиас для связи с подписчиком (фолловером)
+});
+
+Subscription.belongsTo(User, {
+  foreignKey: 'followingId',
+  as: 'Following', // Алиас для связи с пользователем (на которого подписан фолловер)
+});
 
 module.exports = Subscription;

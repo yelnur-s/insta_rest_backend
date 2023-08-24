@@ -26,5 +26,43 @@ const unFollow = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 }
+const getFollowers = async (req, res) => {
+  const user = await User.findOne({
+    where: {
+      username: req.params.username
+    },
+    attributes: { exclude: ['password'] }, // Исключаем поле password из выборки
+  })
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }else{
 
-module.exports = {follow, unFollow}
+    const followers = await Subscription.findAll({
+      where: { followingId: user.id },
+      include: [{ model: User, as: 'Follower' }], // Включаем данные о подписчиках
+    });
+
+    res.status(200).send(followers.map(subscription => subscription.Follower))
+  }
+}
+const getFollowings = async (req, res) => {
+  const user = await User.findOne({
+    where: {
+      username: req.params.username
+    },
+    attributes: { exclude: ['password'] }, // Исключаем поле password из выборки
+  })
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }else{
+
+    const following = await Subscription.findAll({
+      where: { followerId: user.id },
+      include: [{ model: User, as: 'Following' }], // Включаем данные о подписчиках
+    });
+
+    res.status(200).send(following.map(subscription => subscription.Following))
+  }
+}
+
+module.exports = {follow, unFollow, getFollowers, getFollowings}
