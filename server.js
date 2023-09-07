@@ -19,6 +19,7 @@ app.use(require('./app/post/router'));
 app.use(require('./app/story/router'));
 app.use(require('./app/comments/router'));
 app.use(require('./app/subscription/router'));
+app.use(require('./app/like/router'));
 
 
 app.listen(PORT, () => {
