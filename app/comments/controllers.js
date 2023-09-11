@@ -1,16 +1,22 @@
-const Comment = require('./Comment')
+const Comment = require('./Comment');
+const Like = require('../like/Like');
+
 const newComment = (req, res) => {
-  if(
-    req.body.description > 0
-  ){
-    const comment = Comment.create({
-      description: req.body.description,
-      userId: req.user.id,
-      postId: req.body.postId
-    })
-    res.status(200).end();
-  }else{
-    res.status(401).send({message: "заполните все поля"});
+  try {
+    if(
+      req.body.description > 0
+    ){
+      const comment = Comment.create({
+        description: req.body.description,
+        userId: req.user.id,
+        postId: req.body.postId
+      })
+      res.status(200).end();
+    }else{
+      res.status(401).send({message: "заполните все поля"});
+    }
+  } catch (error) {
+    res.status(500).send(error);
   }
 }
 
@@ -21,8 +27,7 @@ const deleteComment = async (req, res) => {
     })
     res.status(200).send();
   } catch (error) {
-      console.error('Error deleting item by ID:', error);
-    throw error;
+    res.status(500).send(error);
   }
 }
 const getCommentsByPostId = async (req, res) => {
@@ -30,13 +35,18 @@ const getCommentsByPostId = async (req, res) => {
     const comments = await Comment.findAll({
       where: {
         postId: req.body.postId
-      }
+      },
+      include: [{ model: Like }], 
     })
+
+    if (!comments) {
+      return res.status(404).send({ message: 'Комментарий не найден' });
+    }
+
     res.status(200).send(comments);
   }
   catch(error) {
-    console.error('Error while fetching items:', error);
-    throw error;
+    res.status(500).send(error);
   }
 }
 module.exports = { newComment, deleteComment, getCommentsByPostId }

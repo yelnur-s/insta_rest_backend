@@ -3,6 +3,7 @@ const path = require('path');
 const { Op } = require('sequelize');
 const User = require('../auth/User');
 const Post = require('./Post');
+const Like = require('../like/Like')
 
 const createPost = (req, res) => {
   if(
@@ -56,8 +57,8 @@ const deletePostByID = async (req, res) => {
     })
     res.status(200).send();
   } catch (error) {
-      console.error('Error deleting item by ID:', error);
-    throw error;
+    console.error('Error deleting item by ID:', error);
+    res.status(500).send(error);
   }
 }
 
@@ -73,49 +74,71 @@ const getAllUserPosts = async (req, res) => {
       where: {
         userId: req.user.id,
       },
+      include: [{ model: Like }], // Включите связанные лайки
     });
 
-     res.status(200).send(posts);
+    if (!posts) {
+      return res.status(404).send({ message: 'Посты не найден' });
+    }
+
+    res.status(200).send(posts);
   } catch (error) {
-      console.error('Error while fetching items:', error);
-    throw error;
+      res.status(500).send('Error while fetching items:', error);
   }
 }
 
 const getAllUsersPosts = async (req, res) => {
   try {
-    const posts = await Post.findAll();
+    const posts = await Post.findAll(
+      {
+        include: [{ model: Like }],
+      }
+    );
+    if (!posts) {
+      return res.status(404).send({ message: 'Посты не найден' });
+    }
     res.status(200).send(posts);
   } catch (error) {
-      console.error('Error while fetching items:', error);
-    throw error;
+    res.status(500).send('Error while fetching items:', error);
   }
 }
 const getPostByID = async (req, res) => {
   try {
-    const post = await Post.findByPk(req.params.id)
+    const post = await Post.findOne({
+      where: { id: req.params.id },
+      include: [{ model: Like }], // Включите связанные лайки
+    })
+
+    if (!post) {
+      return res.status(404).send({ message: 'Пост не найден' });
+    }
+
     res.status(200).send(post);
   } catch (error) {
-      console.error('Item not found', error);
-    throw error;
+    res.status(500).send(error);
   }
 }
 const getByUsername = async (req, res) => {
-  const username = req.params.username.toLowerCase();
-  const user = await User.findOne({
-    where: {
-      username: { [Op.iLike]: `%${username}%` }
-    }
-  })
-  if (!user) {
-    return res.status(404).json({ message: 'User not found' });
-  }else{
-    const posts = await Post.findAll({
+  try {
+    const username = req.params.username.toLowerCase();
+    const user = await User.findOne({
       where: {
-        userId: user.id
+        username: { [Op.iLike]: `%${username}%` }
       }
     })
-    res.status(200).send(posts)
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' });
+    }else{
+      const posts = await Post.findAll({
+        where: {
+          userId: user.id
+        },
+        include: [{ model: Like }] 
+      })
+      res.status(200).send(posts)
+    }
+  } catch (error) {
+    res.status(500).send(error)
   }
 
 }

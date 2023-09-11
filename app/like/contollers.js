@@ -21,8 +21,7 @@ const addLikeToPost = async (req, res) => {
 
     return res.status(201).json(newLike);
   } catch (error) {
-    console.error('Ошибка при добавлении лайка:', error);
-    return res.status(500).json({ message: 'Ошибка сервера' });
+    res.status(500).send({ message: 'Ошибка сервера' });
   }
 };
 
@@ -48,7 +47,7 @@ const addLikeToComment = async (req, res) => {
     return res.status(201).json(newLike);
   } catch (error) {
     console.error('Ошибка при добавлении лайка:', error);
-    return res.status(500).json({ message: 'Ошибка сервера' });
+    res.status(500).send({ message: 'Ошибка сервера' });
   }
 };
 
@@ -74,7 +73,7 @@ const addLikeToStory = async (req, res) => {
     return res.status(201).json(newLike);
   } catch (error) {
     console.error('Ошибка при добавлении лайка:', error);
-    return res.status(500).json({ message: 'Ошибка сервера' });
+    res.status(500).send({ message: 'Ошибка сервера' });
   }
 };
 
@@ -99,7 +98,7 @@ const removeLike = async (req, res) => {
     return res.status(200).json({ message: 'Лайк успешно удален' });
   } catch (error) {
     console.error('Ошибка при удалении лайка:', error);
-    return res.status(500).json({ message: 'Ошибка сервера' });
+    res.status(500).send({ message: 'Ошибка сервера' });
   }
 };
 
@@ -115,7 +114,7 @@ getLikesByPost = async (req, res) => {
     return res.status(200).json(likes);
   } catch (error) {
     console.error('Ошибка при получении лайков:', error);
-    return res.status(500).json({ message: 'Ошибка сервера' });
+    res.status(500).send({ message: 'Ошибка сервера' });
   }
 };
 
@@ -131,7 +130,7 @@ getLikesByComment = async (req, res) => {
     return res.status(200).json(likes);
   } catch (error) {
     console.error('Ошибка при получении лайков:', error);
-    return res.status(500).json({ message: 'Ошибка сервера' });
+    res.status(500).send({ message: 'Ошибка сервера' });
   }
 };
 
@@ -147,7 +146,7 @@ getLikesByStory = async (req, res) => {
     return res.status(200).json(likes);
   } catch (error) {
     console.error('Ошибка при получении лайков:', error);
-    return res.status(500).json({ message: 'Ошибка сервера' });
+    res.status(500).send({ message: 'Ошибка сервера' });
   }
 };
 

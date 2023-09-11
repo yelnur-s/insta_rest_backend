@@ -50,4 +50,17 @@ Like.belongsTo(Story, {
   foreignKey: 'storyId',
 });
 
+Post.hasMany(Like, {
+  foreignKey: 'postId',
+});
+
+Comment.hasMany(Like, {
+  foreignKey: 'commentId',
+});
+
+Story.hasMany(Like, {
+  foreignKey: 'storyId',
+});
+
+
 module.exports = Like;
