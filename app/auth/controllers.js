@@ -57,6 +57,7 @@ const signIn = async (req, res) => {
         id: user.id,
         email: user.email,
         full_name: user.full_name,
+        username: user.username,
         phone: user.phone,
 
       }, jwtOptions.secretOrKey,
