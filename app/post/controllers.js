@@ -5,28 +5,26 @@ const User = require('../auth/User');
 const Post = require('./Post');
 const Like = require('../like/Like')
 
-const createPost = (req, res) => {
-  console.log(req.file, 'file')
-  console.log(req.user, 'user')
-  console.log(req.body, 'body')
-  console.log(req.file ? "true" : "false")
-  console.log(req.body.description ? "true" : "false")
-  console.log(req.file && req.body.description >= 0 ? "true" : "false")
-  if(
-    req.file
-  ){
-    console.log('work')
-    const post = Post.create({
-      image: '/images/postsImages/' + req.file.filename,
-      description: req.body.description,
-      userId: req.user.id
-    })
-   
-    res.status(200).send(post);
-  }else{
-    console.log('don work')
-    res.status(401).send({message: "заполните все поля"});
+const createPost = async (req, res) => {
+  try {
+    if(
+      req.file
+    ){
+      const post = await Post.create({
+        image: '/images/postsImages/' + req.file.filename,
+        description: req.body.description,
+        userId: req.user.id
+      })
+     
+      res.status(200).send(post);
+    }else{
+      res.status(401).send({message: "заполните все поля"});
+    }
+  } catch (error) {
+    console.error('Error deleting item by ID:', error);
+    res.status(500).send(error);
   }
+ 
 }
 
 const editPost = async (req, res) => {
