@@ -6,10 +6,16 @@ const Post = require('./Post');
 const Like = require('../like/Like')
 
 const createPost = (req, res) => {
+  console.log(req.file, 'file')
+  console.log(req.user, 'user')
+  console.log(req.body, 'body')
+  console.log(req.file ? "true" : "false")
+  console.log(req.body.description ? "true" : "false")
+  console.log(req.file && req.body.description >= 0 ? "true" : "false")
   if(
-    req.file && 
-    req.body.description >= 0
+    req.file
   ){
+    console.log('work')
     const post = Post.create({
       image: '/images/postsImages/' + req.file.filename,
       description: req.body.description,
@@ -18,6 +24,7 @@ const createPost = (req, res) => {
    
     res.status(200).send(post);
   }else{
+    console.log('don work')
     res.status(401).send({message: "заполните все поля"});
   }
 }
