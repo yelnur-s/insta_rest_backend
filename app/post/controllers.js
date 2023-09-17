@@ -16,7 +16,7 @@ const createPost = (req, res) => {
       userId: req.user.id
     })
    
-    res.status(200).end();
+    res.status(200).send(post);
   }else{
     res.status(401).send({message: "заполните все поля"});
   }
