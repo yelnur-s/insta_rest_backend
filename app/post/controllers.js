@@ -28,27 +28,41 @@ const createPost = async (req, res) => {
 }
 
 const editPost = async (req, res) => {
-  if(
-    req.file
-  ){
-    const post = await Post.findByPk(req.body.id);
+  try {
+    if(
+      req.file
+    ){
+      const post = await Post.findByPk(req.body.id);
 
-    fs.unlinkSync(path.join(__dirname + '../../../public' + post.image));
+      fs.unlinkSync(path.join(__dirname + '../../../public' + post.image));
 
-    Post.update({
-      image: '/images/postsImages/' + req.file.filename,
-      description: req.body.description,
-      userId: req.user.id
-    },
-    {
-      where: {
-        id: req.body.id
-      }
-    })
-   
-    res.status(200).end();
-  }else{
-    res.status(401).send({message: "заполните все поля"});
+      Post.update({
+        image: '/images/postsImages/' + req.file.filename,
+        description: req.body.description,
+      },
+      {
+        where: {
+          id: req.body.id
+        }
+      })
+    
+      res.status(200).end();
+    }else if(!req.file){
+      const post = await Post.findByPk(req.body.id);
+
+      Post.update({
+        description: req.body.description,
+      },
+      {
+        where: {
+          id: req.body.id
+        }
+      })
+    }else{
+      res.status(401).send({message: "заполните все поля"});
+    }
+  } catch (error) {
+    res.status(500).send(error);
   }
 }
 
