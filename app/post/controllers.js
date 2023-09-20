@@ -29,7 +29,6 @@ const createPost = async (req, res) => {
 
 const editPost = async (req, res) => {
   if(
-    req.body.description.length >= 0 &&
     req.file
   ){
     const post = await Post.findByPk(req.body.id);
