@@ -4,7 +4,7 @@ const { Op } = require('sequelize');
 const User = require('../auth/User');
 const Post = require('./Post');
 const Like = require('../like/Like')
-
+const Comment = require('../comments/Comment')
 const createPost = async (req, res) => {
   try {
     if(
@@ -92,7 +92,13 @@ const getAllUserPosts = async (req, res) => {
       where: {
         userId: req.user.id,
       },
-      include: [{ model: Like }], // Включите связанные лайки
+      include: [
+        { model: Like },
+        {
+          model: User,
+          attributes: ['id', 'full_name', 'username'], // Выбирайте нужные атрибуты пользователя
+        },
+      ], // Включите связанные лайки
     });
 
     if (!posts) {
@@ -109,7 +115,14 @@ const getAllUsersPosts = async (req, res) => {
   try {
     const posts = await Post.findAll(
       {
-        include: [{ model: Like }],
+        include: [
+          { model: Like },
+          { model: Comment },
+          {
+            model: User,
+            attributes: ['id', 'full_name', 'username'], // Выбирайте нужные атрибуты пользователя
+          },
+        ],
       }
     );
     if (!posts) {
@@ -124,7 +137,14 @@ const getPostByID = async (req, res) => {
   try {
     const post = await Post.findOne({
       where: { id: req.params.id },
-      include: [{ model: Like }], // Включите связанные лайки
+      include: [
+        { model: Like },
+        { model: Comment },
+        {
+          model: User,
+          attributes: ['id', 'full_name', 'username'], // Выбирайте нужные атрибуты пользователя
+        },
+      ], // Включите связанные лайки
     })
 
     if (!post) {
