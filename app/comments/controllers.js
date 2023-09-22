@@ -11,7 +11,7 @@ const newComment = (req, res) => {
         userId: req.user.id,
         postId: req.body.postId
       })
-      res.status(200).end();
+      res.status(200).send(comment);
     }else{
       res.status(401).send({message: "заполните все поля"});
     }
@@ -25,7 +25,7 @@ const deleteComment = async (req, res) => {
     await Comment.destroy({
       where: { id: req.params.id }
     })
-    res.status(200).send();
+    res.status(200).end();
   } catch (error) {
     res.status(500).send(error);
   }
