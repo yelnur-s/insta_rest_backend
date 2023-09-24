@@ -38,8 +38,13 @@ const getCommentsByPostId = async (req, res) => {
       where: {
         postId: req.params.id
       },
-      include: [{ model: Like }], 
-      include: [{ model: User }], 
+      include: [
+        { model: Like }, 
+        {
+          model: User,
+          attributes: ['id', 'full_name', 'username'], // Выбирайте нужные атрибуты пользователя
+        },
+      ], 
     })
 
     if (!comments) {
