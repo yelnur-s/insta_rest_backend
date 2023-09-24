@@ -12,7 +12,16 @@ const newComment = async (req, res) => {
         userId: req.user.id,
         postId: req.body.postId
       })
-      res.status(200).send(comment);
+      let newComment = {
+        id: comment.id,
+        description: comment.description,
+        userId: comment.userId,
+        postId: comment.postId,
+        updatedAt: comment.updatedAt,
+        createdAt: comment.createdAt,
+        User: {id: req.user.id, full_name: req.user.full_name, username: req.user.username}
+      }
+      res.status(200).send(newComment);
     }else{
       res.status(401).send({message: "заполните все поля"});
     }
