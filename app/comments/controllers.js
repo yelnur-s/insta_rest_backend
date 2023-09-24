@@ -1,5 +1,6 @@
 const Comment = require('./Comment');
 const Like = require('../like/Like');
+const User = require('../auth/User');
 
 const newComment = async (req, res) => {
   try {
@@ -30,6 +31,7 @@ const deleteComment = async (req, res) => {
     res.status(500).send(error);
   }
 }
+
 const getCommentsByPostId = async (req, res) => {
   try {
     const comments = await Comment.findAll({
@@ -37,6 +39,7 @@ const getCommentsByPostId = async (req, res) => {
         postId: req.params.id
       },
       include: [{ model: Like }], 
+      include: [{ model: User }], 
     })
 
     if (!comments) {
