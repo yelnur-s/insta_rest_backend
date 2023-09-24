@@ -31,10 +31,10 @@ const deleteComment = async (req, res) => {
   }
 }
 const getCommentsByPostId = async (req, res) => {
-  try{
+  try {
     const comments = await Comment.findAll({
       where: {
-        postId: req.body.postId
+        postId: req.params.id
       },
       include: [{ model: Like }], 
     })
@@ -44,9 +44,10 @@ const getCommentsByPostId = async (req, res) => {
     }
 
     res.status(200).send(comments);
-  }
-  catch(error) {
+  } catch (error) {
     res.status(500).send(error);
   }
+   
+  
 }
 module.exports = { newComment, deleteComment, getCommentsByPostId }

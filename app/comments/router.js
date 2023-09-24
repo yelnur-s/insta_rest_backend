@@ -5,7 +5,7 @@ const passport = require('passport')
 
 router.post('/api/newComment', passport.authenticate('jwt', { session: false }), newComment);
 router.delete('/api/deleteComment/:id', passport.authenticate('jwt', { session: false }), deleteComment);
-router.get('/api/getComments', passport.authenticate('jwt', { session: false }), getCommentsByPostId);
+router.get('/api/getComments/:id', passport.authenticate('jwt', { session: false }), getCommentsByPostId);
 
 
 
