@@ -1,12 +1,12 @@
 const Comment = require('./Comment');
 const Like = require('../like/Like');
 
-const newComment = (req, res) => {
+const newComment = async (req, res) => {
   try {
     if(
-      req.body.description > 0
+      req.body.description.length > 0
     ){
-      const comment = Comment.create({
+      const comment = await Comment.create({
         description: req.body.description,
         userId: req.user.id,
         postId: req.body.postId
@@ -16,7 +16,7 @@ const newComment = (req, res) => {
       res.status(401).send({message: "заполните все поля"});
     }
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send(error, {message: "что-то пошло не так"});
   }
 }
 
