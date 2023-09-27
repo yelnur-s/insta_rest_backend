@@ -9,11 +9,12 @@ const createStory = (req, res) => {
     if(
       req.file
     ){
+      let storyPath = req.file.path.substring(6)
       const currentDate = new Date();
       const validTill = new Date(currentDate.getTime() + (24 * 60 * 60 * 1000)); // Добавляем 24 часа в миллисекундах
 
       const story = Story.create({
-        video: '/images/stories/' + req.file.filename,
+        video: storyPath,
         valid_till: validTill,
         userId: req.user.id
       })
