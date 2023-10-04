@@ -115,10 +115,26 @@ const userDetailInfo = async (req, res) => {
     res.status(500).send(error)
   }
 }
+const getUserInfoById = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        id: req.params.id
+      },
+      attributes: { exclude: ['password'] }, // Исключаем поле password из выборки
+    })
+
+    if(user) res.status(200).send(user)
+    else res.status(404).send({message: "User not found"})
+  } catch (error) {
+    res.status(500).send(error)
+  }
+}
 
 module.exports = {
   signUp,
   signIn,
   editUser,
-  userDetailInfo
+  userDetailInfo,
+  getUserInfoById
 }
