@@ -156,6 +156,30 @@ const getPostByID = async (req, res) => {
     res.status(500).send(error);
   }
 }
+const getPostsByUserID = async (req, res) => {
+  try {
+    const post = await Post.findAll({
+      where: { userId: req.params.id },
+      include: [
+        { model: Like },
+        { model: Comment },
+        {
+          model: User,
+          attributes: ['id', 'full_name', 'username'], // Выбирайте нужные атрибуты пользователя
+        },
+      ], // Включите связанные лайки
+    })
+
+    if (!post) {
+      return res.status(404).send({ message: 'Пост не найден' });
+    }
+
+    res.status(200).send(post);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
+
 const getByUsername = async (req, res) => {
   try {
     const username = req.params.username.toLowerCase();
@@ -182,5 +206,5 @@ const getByUsername = async (req, res) => {
 }
 
 
-module.exports = {createPost, getAllUserPosts, getAllUsersPosts, getPostByID, deletePostByID, editPost, getByUsername}
+module.exports = {createPost, getAllUserPosts, getAllUsersPosts, getPostByID, getPostsByUserID,  deletePostByID, editPost, getByUsername}
 
