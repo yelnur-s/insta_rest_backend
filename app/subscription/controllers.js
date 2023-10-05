@@ -5,8 +5,8 @@ const follow = async (req, res) => {
   try {
     const followerId = req.user.id; // Идентификатор текущего пользователя
     const followingId = req.params.userId;  
-    await Subscription.create({ followerId, followingId });
-    res.status(201).json({ message: 'Successfully subscribed' });
+    const subscription = await Subscription.create({ followerId, followingId });
+    res.status(201).send(subscription);
   } catch (error) {
     res.status(400).send({ message: error.message });
   }
@@ -39,6 +39,7 @@ const getFollowers = async (req, res) => {
 
       const followers = await Subscription.findAll({
         where: { followingId: user.id },
+        attributes: { exclude: ['password'] },
         include: [{ model: User, as: 'Follower' }], // Включаем данные о подписчиках
       });
 
@@ -62,6 +63,7 @@ const getFollowings = async (req, res) => {
 
       const following = await Subscription.findAll({
         where: { followerId: user.id },
+        attributes: { exclude: ['password'] },
         include: [{ model: User, as: 'Following' }], // Включаем данные о подписчиках
       });
 
