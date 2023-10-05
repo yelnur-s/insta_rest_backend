@@ -39,8 +39,7 @@ const getFollowers = async (req, res) => {
 
       const followers = await Subscription.findAll({
         where: { followingId: user.id },
-        attributes: { exclude: ['password'] },
-        include: [{ model: User, as: 'Follower' }], // Включаем данные о подписчиках
+        include: [{ model: User, as: 'Follower', attributes: { exclude: ['password'] } }], // Включаем данные о подписчиках
       });
 
       res.status(200).send(followers.map(subscription => subscription.Follower))
@@ -63,8 +62,7 @@ const getFollowings = async (req, res) => {
 
       const following = await Subscription.findAll({
         where: { followerId: user.id },
-        attributes: { exclude: ['password'] },
-        include: [{ model: User, as: 'Following' }], // Включаем данные о подписчиках
+        include: [{ model: User, as: 'Following', attributes: { exclude: ['password'] } }], // Включаем данные о подписчиках
       });
 
       res.status(200).send(following.map(subscription => subscription.Following))
