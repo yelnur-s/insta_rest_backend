@@ -42,7 +42,7 @@ const getFollowers = async (req, res) => {
         include: [{ model: User, as: 'Follower', attributes: { exclude: ['password'] } }], // Включаем данные о подписчиках
       });
 
-      res.status(200).send(followers.map(subscription => subscription.Follower))
+      res.status(200).send(followers)
     }
   } catch (error) {
     res.status(200).send(error)
@@ -65,7 +65,7 @@ const getFollowings = async (req, res) => {
         include: [{ model: User, as: 'Following', attributes: { exclude: ['password'] } }], // Включаем данные о подписчиках
       });
 
-      res.status(200).send(following.map(subscription => subscription.Following))
+      res.status(200).send(following)
     }
   } catch (error) {
     res.status(200).send(error)
