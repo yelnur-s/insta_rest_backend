@@ -29,7 +29,7 @@ const getFollowers = async (req, res) => {
   try {
     const user = await User.findOne({
       where: {
-        username: req.params.username
+        id: req.params.id
       },
       attributes: { exclude: ['password'] }, // Исключаем поле password из выборки
     })
@@ -52,7 +52,7 @@ const getFollowings = async (req, res) => {
   try {
     const user = await User.findOne({
       where: {
-        username: req.params.username
+        id: req.params.id
       },
       attributes: { exclude: ['password'] }, // Исключаем поле password из выборки
     })
