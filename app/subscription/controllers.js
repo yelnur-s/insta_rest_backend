@@ -72,4 +72,56 @@ const getFollowings = async (req, res) => {
   }
 }
 
-module.exports = {follow, unFollow, getFollowers, getFollowings}
+const getSuggestions = async (req, res) => {
+  const userId = req.params.userId  
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(400).send({message: 'User not found'})
+    }
+    // Используем ассоциацию Subscription для получения друзей (подписчиков)
+    const friends = await Subscription.findAll({
+      where: { followerId: user.id },
+      include: [{ model: User, as: 'Follower', attributes: { exclude: ['password'] } }], // Включаем данные о подписчиках
+    });
+
+    const friendsOfFriends = [];
+
+    // Получить друзей каждого друга пользователя
+    for (const friend of friends) {
+      const friendFriends = await Subscription.findAll({
+        where: { followerId: friend.followingId },
+        include: [{ model: User, as: 'Following', attributes: { exclude: ['password'] } }], // Включаем данные о подписчиках
+      });
+      // Добавить в список друзей друзей только тех, кого пользователь ещё не знает
+      const newFriendsOfFriend = friendFriends.filter(
+        (friendOfFriend) => !friends.some((userFriend) => userFriend.id === friendOfFriend.id)
+      );
+      friendsOfFriends.push(...newFriendsOfFriend);
+    }
+    
+    // фильтрация на кого подписан я и на кого подписаны те на кого подписан я
+
+    const friendList = friendsOfFriends
+    const subscriptions = friends
+
+    const notSubscribedUsers = friendList.filter(
+      (friend) => !subscriptions.some((subscription) => subscription.followingId === friend.followingId)
+    );
+
+    // 5 - limit
+    const suggestions = notSubscribedUsers.slice(0, 5);
+
+    res.status(200).send(suggestions)
+    
+  } catch (error) {
+    console.error('Error getting friend list:', error);
+    res.status(400).send({message: 'something wrong'})
+  }
+ 
+
+
+}
+
+
+module.exports = {follow, unFollow, getFollowers, getFollowings, getSuggestions}
