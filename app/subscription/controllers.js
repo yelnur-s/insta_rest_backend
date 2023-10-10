@@ -102,8 +102,11 @@ const getSuggestions = async (req, res) => {
     
     // фильтрация на кого подписан я и на кого подписаны те на кого подписан я
 
-    const friendList = friendsOfFriends
+    let friendList = friendsOfFriends
     const subscriptions = friends
+
+    friendList = friendList.filter(item => item.followingId !== user.id)
+
 
     const notSubscribedUsers = friendList.filter(
       (friend) => !subscriptions.some((subscription) => subscription.followingId === friend.followingId)
