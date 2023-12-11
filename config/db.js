@@ -21,6 +21,7 @@ if(process.env.NODE_ENV === "production"){
   sequelize = new Sequelize(dbConf.development.database, dbConf.development.username, dbConf.development.password, {
     host: dbConf.development.host,
     dialect: dbConf.development.dialect,
+    port: dbConf.development.port,
   });
 }
 
