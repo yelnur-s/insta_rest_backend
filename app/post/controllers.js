@@ -67,9 +67,9 @@ const editPost = async (req, res) => {
 }
 
 const deletePostByID = async (req, res) => {
-  const post = await Post.findByPk(req.params.id)
-  fs.unlinkSync(path.join(__dirname + '../../../public' + post.image));
   try {
+    const post = await Post.findByPk(req.params.id)
+    fs.unlinkSync(path.join(__dirname + '../../../public' + post.image));
     await Post.destroy({
       where: { id: req.params.id }
     })
