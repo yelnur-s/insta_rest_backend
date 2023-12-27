@@ -4,14 +4,21 @@ const User = require('../auth/User');
 
 const newComment = async (req, res) => {
   try {
-    if(
-      req.body.description.length > 0
-    ){
+    // Проверка на существование поста
+    const postId = req.body.postId;
+    const post = await Post.findByPk(postId);
+
+    if (!post) {
+      return res.status(404).send({ message: "Пост не найден" });
+    }
+
+    if (req.body.description.length > 0) {
       const comment = await Comment.create({
         description: req.body.description,
         userId: req.user.id,
-        postId: req.body.postId
-      })
+        postId: postId,
+      });
+
       let newComment = {
         id: comment.id,
         description: comment.description,
@@ -19,16 +26,23 @@ const newComment = async (req, res) => {
         postId: comment.postId,
         updatedAt: comment.updatedAt,
         createdAt: comment.createdAt,
-        User: {id: req.user.id, full_name: req.user.full_name, username: req.user.username}
-      }
+        User: {
+          id: req.user.id,
+          full_name: req.user.full_name,
+          username: req.user.username,
+        },
+      };
+
       res.status(200).send(newComment);
-    }else{
-      res.status(401).send({message: "заполните все поля"});
+    } else {
+      res.status(401).send({ message: "Заполните все поля" });
     }
   } catch (error) {
-    res.status(500).send(error, {message: "что-то пошло не так"});
+    console.error(error);
+    res.status(500).send({ message: "Что-то пошло не так" });
   }
-}
+};
+
 
 const deleteComment = async (req, res) => {
   try {
