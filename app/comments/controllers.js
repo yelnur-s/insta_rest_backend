@@ -1,6 +1,7 @@
 const Comment = require('./Comment');
 const Like = require('../like/Like');
 const User = require('../auth/User');
+const Post = require('../post/Post');
 
 const newComment = async (req, res) => {
   try {
