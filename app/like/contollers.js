@@ -103,7 +103,7 @@ const removeLike = async (req, res) => {
 };
 
 // Получение лайков по id поста
-getLikesByPost = async (req, res) => {
+const getLikesByPost = async (req, res) => {
   try {
     const { postId } = req.params;
 
@@ -119,7 +119,7 @@ getLikesByPost = async (req, res) => {
 };
 
 // Получение лайков по id комментария
-getLikesByComment = async (req, res) => {
+const getLikesByComment = async (req, res) => {
   try {
     const { commentId } = req.params;
 
@@ -135,7 +135,7 @@ getLikesByComment = async (req, res) => {
 };
 
 // Получение лайков по id истории
-getLikesByStory = async (req, res) => {
+const getLikesByStory = async (req, res) => {
   try {
     const { storyId } = req.params;
 
