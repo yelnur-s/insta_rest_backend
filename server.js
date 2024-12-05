@@ -21,7 +21,7 @@ app.use(require('./app/story/router'));
 app.use(require('./app/comments/router'));
 app.use(require('./app/subscription/router'));
 app.use(require('./app/like/router'));
-
+app.get('/', (req, res)=>res.status(200).end())
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
